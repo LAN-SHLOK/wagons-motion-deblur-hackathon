@@ -1,25 +1,21 @@
-# --- YOUR ORIGINAL LIBS (Updated for Server Compatibility) ---
-albumentations==2.0.8
-gdown==5.2.0
-matplotlib==3.10.8
-numpy==1.26.4          # Downgraded slightly to avoid YOLO compatibility issues
-opencv-python-headless # Headless is required for servers (no GUI)
-pandas==2.2.3
-pillow==11.0.0
-plotly==5.24.1
-scikit-image==0.25.0
-scipy==1.14.1
-seaborn==0.13.2
-tqdm==4.67.1
+# --- Core Server ---
+fastapi
+uvicorn[standard]
+python-multipart
 
-# --- THE MISSING "ENGINE" LIBS (Crucial for Deployment) ---
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-ultralytics==8.3.0    # The engine for your YOLOv8 model
-python-dotenv==1.0.0
+# --- AI & Vision ---
+albumentations>=1.4.0
+ultralytics
+opencv-python-headless
+numpy<2.0.0
+pillow
+scikit-image
+scipy
+pandas
+matplotlib
+seaborn
 
-# --- SERVER-SAFE AI LIBS ---
+# --- Force CPU Torch (Crucial for Render Free Tier) ---
 --index-url https://download.pytorch.org/whl/cpu
-torch==2.5.1
-torchvision==0.20.1
+torch
+torchvision
