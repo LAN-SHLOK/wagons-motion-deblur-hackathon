@@ -1,10 +1,8 @@
-# --- Core Server ---
+# Use standard repository for FastAPI, Uvicorn, etc.
 fastapi
 uvicorn[standard]
 python-multipart
-
-# --- AI & Vision ---
-albumentations>=1.4.0
+albumentations
 ultralytics
 opencv-python-headless
 numpy<2.0.0
@@ -14,8 +12,9 @@ scipy
 pandas
 matplotlib
 seaborn
+python-dotenv
 
-# --- Force CPU Torch (Crucial for Render Free Tier) ---
---index-url https://download.pytorch.org/whl/cpu
+# Use PyTorch repository ONLY for torch-related items
+--extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
