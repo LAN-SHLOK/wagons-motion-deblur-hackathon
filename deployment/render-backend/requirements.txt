@@ -18,7 +18,6 @@ python-dotenv
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
-=======
 # Use standard repository for FastAPI, Uvicorn, etc.
 fastapi
 uvicorn[standard]
@@ -39,4 +38,3 @@ python-dotenv
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
->>>>>>> 4e5258ae60840b7d0d8a477100d2473a5f4ac473
