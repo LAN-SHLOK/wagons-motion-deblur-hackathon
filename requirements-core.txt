@@ -1,11 +1,19 @@
 # Core Computer Vision
-opencv-python==4.12.0.88
-numpy==2.2.6
-pillow==12.0.0
+opencv-python==4.10.0.84
+numpy==1.26.4
+pillow==10.4.0
 
-# DeblurGANv2 (Your src/deblurring/DeblurGANv2)
-torch==2.5.1+cu121
-torchvision==0.20.1+cu121
+# PyTorch CPU
+torch==2.1.2
+torchvision==0.16.2
 
-# Essential utilities
-tqdm==4.67.1
+# YOLOv8 + Utils
+ultralytics==8.2.48
+tqdm==4.66.5
+PyYAML==6.0.1
+matplotlib==3.8.4
+scikit-image==0.22.0
+
+# TRACKING (NEW)
+filterpy              # Kalman filter for DeepSORT
+scipy==1.11.4         # Distance calculations

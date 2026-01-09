@@ -1,0 +1,6 @@
+names:
+  0: wagon
+nc: 1
+path: C:\Projects\Hackathons\wagons-motion-deblur-hackathon\core\datasets\wagon_blurred
+train: images/train
+val: images/val

@@ -1,0 +1,6 @@
+names:
+- wagon
+nc: 1
+path: C:\Projects\Hackathons\wagons-motion-deblur-hackathon\core\data\processed
+train: deblurred_frames
+val: deblurred_frames
