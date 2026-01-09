@@ -43,4 +43,3 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"status": "WagonAI Engine Online"}
->>>>>>> 4e5258ae60840b7d0d8a477100d2473a5f4ac473
