@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WagonAI | Motion Deblur & Detection System</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="brand">
+                    <h1>Railway Wagon Inspection System</h1>
+                    <p>AI-Powered Motion Blur Correction & Damage Detection</p>
+                </div>
+                <div class="status-badge" id="status-badge">
+                    <div class="status-dot"></div>
+                    <span id="status-text">System Ready</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Upload Section -->
+            <section id="upload-section" class="upload-section">
+                <div class="upload-card" id="upload-card">
+                    <div class="upload-icon">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h2>Upload Video for Processing</h2>
+                    <p class="upload-subtitle">Camera Selection</p>
+                    <select class="camera-select">
+                        <option>Camera 1 - Entry Point</option>
+                        <option>Camera 2 - Loading Bay</option>
+                        <option>Camera 3 - Exit Point</option>
+                    </select>
+                    <p class="upload-label">Video File</p>
+                    <input type="file" id="video-input" accept="video/*" style="display: none;">
+                    <button class="btn-choose-file" id="choose-file-btn">Choose File</button>
+                    <span id="file-name" class="file-name">No file chosen</span>
+                    <button class="btn-start-processing" id="start-processing-btn" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Start Processing
+                    </button>
+                    <div class="demo-notice">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div>
+                            <strong>Demo Mode Active</strong>
+                            <p>This prototype simulates video processing with sample data. In production, this would interface with TensorRT-optimized models on NVIDIA Jetson AGX.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section id="processing-section" class="processing-section hidden">
+                <div class="processing-card">
+                    <div class="spinner-wrapper">
+                        <div class="spinner"></div>
+                    </div>
+                    <h3>Processing Video</h3>
+                    <p>Frame Extraction → Motion Deblurring → YOLOv8 Detection → OCR Analysis</p>
+                    <div class="progress-wrapper">
+                        <div class="progress-bar">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="progress-percent">0%</span>
+                            <span id="progress-status">Initializing...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results-section hidden">
+                <!-- Comparison View -->
+                <div class="comparison-container">
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <h3>Before (Blurred)</h3>
+                            <span id="frame-info" class="frame-counter">Frame 1/1</span>
+                        </div>
+                        <div class="image-wrapper">
+                            <img id="input-image" src="" alt="Blurred Input" class="comparison-image blurred">
+                        </div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <h3>After (Enhanced)</h3>
+                            <button id="play-btn" class="icon-button">
+                                <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
+                                <svg id="pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="image-wrapper">
+                            <img id="output-image" src="" alt="Enhanced Output" class="comparison-image">
+                            <canvas id="detection-canvas" class="detection-canvas"></canvas>
+                        </div>
+                        <input type="range" id="frame-slider" min="0" max="0" value="0" class="frame-slider">
+                    </div>
+                </div>
+
+                <!-- Analytics Metrics -->
+                <div class="analytics-grid">
+                    <div class="stat-card stat-blue">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="wagons-value">0</div>
+                            <div class="stat-label">Wagons Detected</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-green">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="damages-value">0</div>
+                            <div class="stat-label">Damages Found</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-yellow">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="ssim-value">0.00</div>
+                            <div class="stat-label">SSIM</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-purple">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="psnr-value">0.0</div>
+                            <div class="stat-label">PSNR (dB)</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-cyan">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="time-value">0.0s</div>
+                            <div class="stat-label">Processing Time</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-orange">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="ocr-value">0.0%</div>
+                            <div class="stat-label">OCR Accuracy</div>
+                        </div>
+                        <div class="stat-trend up">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                <polyline points="17 6 23 6 23 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="chart-section">
+                    <h3>Performance Metrics Over Time</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="performance-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="new-video-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                        Process New Video
+                    </button>
+                    <button class="btn-primary" id="export-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Export Report
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Hidden video processing elements -->
+    <video id="video-element" style="display: none;"></video>
+    <canvas id="canvas-element" style="display: none;"></canvas>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
