@@ -34,7 +34,6 @@ async def run_pipeline(file: UploadFile = File(...)):
         "confidence": 93.8,
         "psnr_history": [22.4, 24.1, 26.5, 28.9, 27.2, 30.5]
     }
-=======
 from fastapi import FastAPI
 
 # This variable NAME must be exactly 'app'
