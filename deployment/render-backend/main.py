@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import time
@@ -34,3 +35,13 @@ async def run_pipeline(file: UploadFile = File(...)):
         "confidence": 93.8,
         "psnr_history": [22.4, 24.1, 26.5, 28.9, 27.2, 30.5]
     }
+=======
+from fastapi import FastAPI
+
+# This variable NAME must be exactly 'app'
+app = FastAPI() 
+
+@app.get("/")
+async def root():
+    return {"status": "WagonAI Engine Online"}
+>>>>>>> 4e5258ae60840b7d0d8a477100d2473a5f4ac473

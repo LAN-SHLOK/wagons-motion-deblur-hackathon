@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Use standard repository for FastAPI, Uvicorn, etc.
 fastapi
 uvicorn[standard]
@@ -18,3 +19,25 @@ python-dotenv
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch
 torchvision
+=======
+# Use standard repository for FastAPI, Uvicorn, etc.
+fastapi
+uvicorn[standard]
+python-multipart
+albumentations
+ultralytics
+opencv-python-headless
+numpy<2.0.0
+pillow
+scikit-image
+scipy
+pandas
+matplotlib
+seaborn
+python-dotenv
+
+# Use PyTorch repository ONLY for torch-related items
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+torchvision
+>>>>>>> 4e5258ae60840b7d0d8a477100d2473a5f4ac473
