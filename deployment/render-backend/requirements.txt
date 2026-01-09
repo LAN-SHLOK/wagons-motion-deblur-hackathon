@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Use standard repository for FastAPI, Uvicorn, etc.
 fastapi
 uvicorn[standard]
